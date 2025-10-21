@@ -4,6 +4,8 @@ import math
 import pygame as pg
 import pygame_menu
 import redditwarp.SYNC
+import webbrowser
+
 
 # Not using relative import to handle circular import issue when importing TitleScreen
 # TODO Fix this later
@@ -99,7 +101,10 @@ class StartMenu(State):
         self.menu.add.button("Options", self.options_menu)
         self.menu.add.button('Change Username', self.manager.set_state, UsernamePrompt)
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
-
+        
+    def open_reddit(self):
+        webbrowser.open("https://www.reddit.com/r/Temple/top/")
+        
     def instructions_menu(self):
         """Opens the instructions menu."""
 
@@ -140,11 +145,14 @@ class StartMenu(State):
             '''
             # Add news to page
             self.menu.add.label(news_text, max_char=-1, font_size=20)           
-
+        
+        # Add reddit button
+        self.menu.add.button('Visit Reddit', self.open_reddit)
+        
         # Add back button
         self.menu.add.button('Back', self.main_menu)
 
-    
+
     def minigames_menu(self):
         """
         Opens the minigames menu and allows you to pick a specific minigame to 
