@@ -3,6 +3,7 @@ import math
 
 import pygame as pg
 import pygame_menu
+import redditwarp.SYNC
 
 # Not using relative import to handle circular import issue when importing TitleScreen
 # TODO Fix this later
@@ -111,11 +112,14 @@ class StartMenu(State):
             # Add game instructions
         instructions_text = "To move, use left and right arrow keys, or a and d\nTo jump, use up arrow key, w, or spacebar\nTo melee attack, use left click or q\nTo range attack, use right click or e"
         self.menu.add.label(instructions_text, max_char=-1, font_size=20)
+    
 
         # Add back button
         self.menu.add.button('Back', self.main_menu)
 
     def news_menu(self):
+        client = redditwarp.SYNC.Client()
+
         """Opens Temple news."""
 
         if (self.current_theme == "Light"):
@@ -124,8 +128,17 @@ class StartMenu(State):
         else:
             self.menu = pygame_menu.Menu('Options', SCREEN_WIDTH, SCREEN_HEIGHT, theme=pygame_menu.themes.THEME_DARK)
 
-        # Add news 
-        news_text = "My news"
+        self.menu.add.label("Top /Temple News of the day on Reddit:", max_char=-1, font_size=28)
+        
+        # Display the top submission of the day in the r/Temple subreddit.
+        m = next(client.p.subreddit.pull.top('Temple', time='day'))
+        
+        news_text = f'''{m.title}
+        Submitted {m.created_at.astimezone().ctime()}{' *' if m.is_edited else ''} \
+        by u/{m.author_display_name} to r/{m.subreddit.name}
+        '''
+             
+        # Add news to page
         self.menu.add.label(news_text, max_char=-1, font_size=20)
 
         # Add back button
