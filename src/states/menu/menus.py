@@ -130,21 +130,21 @@ class StartMenu(State):
 
         self.menu.add.label("Top /Temple News of the day on Reddit:", max_char=-1, font_size=28)
         
-        # Display the top submission of the day in the r/Temple subreddit.
-        m = next(client.p.subreddit.pull.top('Temple', time='day'))
+        # Display the top 3 submission of the day in the r/Temple subreddit.
+        submissions = client.p.subreddit.pull.top('Temple', amount= 3, time='day')
         
-        news_text = f'''{m.title}
-        Submitted {m.created_at.astimezone().ctime()}{' *' if m.is_edited else ''} \
-        by u/{m.author_display_name} to r/{m.subreddit.name}
-        '''
-             
-        # Add news to page
-        self.menu.add.label(news_text, max_char=-1, font_size=20)
+        for m in submissions:
+            news_text = f'''{m.title}
+            Submitted {m.created_at.astimezone().ctime()}{' *' if m.is_edited else ''} \
+            by u/{m.author_display_name} to r/{m.subreddit.name}
+            '''
+            # Add news to page
+            self.menu.add.label(news_text, max_char=-1, font_size=20)           
 
         # Add back button
         self.menu.add.button('Back', self.main_menu)
 
-
+    
     def minigames_menu(self):
         """
         Opens the minigames menu and allows you to pick a specific minigame to 
